@@ -29,7 +29,6 @@ class ImageGalleryItem extends Component {
         </li>
       );
     });
-
     return element;
   }
 }

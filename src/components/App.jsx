@@ -32,7 +32,10 @@ export class App extends Component {
       this.setState({ loading: false });
     }
   }
-    updateSearch = ({ search }) => {
+  updateSearch = ({ search }) => {
+    if (this.state.search === search) {
+      return
+    }
     this.setState({ search, items: [], page: 1 }, () => {
       this.fetchPosts();
     });
