@@ -1,0 +1,12 @@
+.gallaryItem {
+    overflow: hidden;
+}
+.gallaryLargeImage {
+transform: scale(1);
+transition: transform 0.3s ease-in-out;
+transform-origin: center;
+cursor: pointer;
+}
+.gallaryLargeImage:hover {
+transform: scale(1.02);
+}
