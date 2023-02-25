@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Loader from './Loader/Loader.jsx';
 import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
-import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem';
 import Button from './Button/Button';
 import fetchPost from '../shared/api';
 import Modal from './Modal/Modal';
