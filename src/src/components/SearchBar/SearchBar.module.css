@@ -1,0 +1,13 @@
+.input {
+width: 200px;
+height: 40px;
+
+border: none;
+}
+.input:focus {
+outline:none;
+}
+.button {
+height: 42px;
+margin-left: 5px;
+}
