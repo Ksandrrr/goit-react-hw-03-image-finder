@@ -6,37 +6,37 @@ class Modal extends Component {
   state = {
     loaded: false,
   };
- componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyDown);
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
   handleImageLoad = () => {
     this.setState({ loaded: true });
   };
 
-  closeModal = () => {
+  closeModal = e => {
+    if (e.target.nodeName === `IMG`) {
+      return;
+    }
     const { openModal } = this.props;
     openModal();
   };
- handleKeyDown = event => {
-  if (event.keyCode === 27) {
-    this.closeModal()
-  }
-};
+  handleKeyDown = e => {
+    if (e.keyCode === 27) {
+      const { openModal } = this.props;
+      openModal();
+    }
+  };
 
   render() {
     const { photoModal } = this.props;
     const { loaded } = this.state;
 
     return (
-      <div
-        className={Style.overlay}
-        onClick={this.closeModal}
-      // onKeyDown={this.handleKeyDown} не працює..
-      >
+      <div className={Style.overlay} onClick={this.closeModal}>
         <div className={Style.modal}>
           {!loaded && (
             <RotatingLines

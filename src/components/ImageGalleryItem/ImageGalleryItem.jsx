@@ -15,33 +15,26 @@ class ImageGalleryItem extends Component {
   };
 
   render() {
-    const { item } = this.props;
+    const { webformatURL, tags, largeImageURL } = this.props;
 
-    const element = item.map(({ id, tags, webformatURL, largeImageURL }) => {
-      return (
-        <li className={css.gallaryItem} key={id}>
-          <img
-            className={css.gallaryLargeImage}
-            src={webformatURL}
-            alt={tags}
-            onClick={() => this.useModal({ largeImageURL })}
-          />
-        </li>
-      );
-    });
-    return element;
+    return (
+      <li className={css.gallaryItem}>
+        <img
+          className={css.gallaryLargeImage}
+          src={webformatURL}
+          alt={tags}
+          onClick={() => this.useModal({ largeImageURL })}
+        />
+      </li>
+    );
   }
 }
 ImageGalleryItem.propTypes = {
   openModal: PropTypes.func,
-  item: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      tags: PropTypes.string,
-      webformatURL: PropTypes.string,
-      largeImageURL: PropTypes.string,
-    })
-  ),
+  id: PropTypes.number,
+  tags: PropTypes.string,
+  webformatURL: PropTypes.string,
+  largeImageURL: PropTypes.string,
 };
 
 export default ImageGalleryItem;

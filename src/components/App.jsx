@@ -3,9 +3,9 @@ import Loader from './Loader/Loader.jsx';
 import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import ImageGalleryItem from './ImageGalleryItem/ImageGalleryItem';
-import Button from "./Button/Button"
-import axios from 'axios';
-import Modal from "./Modal/Modal"
+import Button from './Button/Button';
+import fetchPost from '../shared/api';
+import Modal from './Modal/Modal';
 export class App extends Component {
   state = {
     search: '',
@@ -14,19 +14,24 @@ export class App extends Component {
     loading: false,
     modal: false,
     photoModal: ``,
+    loadMore: true,
+    notFound: false,
+    hasMore: true,
   };
+
   async fetchPosts() {
+    const { search, page } = this.state;
     try {
-      this.setState({ loading: true });
-      const apiKey = '33025526-c7f8a1e0e4b08b9a5d2f6635c';
-      const { search, page} = this.state;
-      const perPage = 12;
-      const response = await axios.get(
-        `https://pixabay.com/api/?key=${apiKey}&q=${search}&per_page=${perPage}&page=${page}`
-      );
+      this.setState({ loading: true, notFound: false });
+
+      const response = await fetchPost(search, page);
       this.setState(({ items }) => ({
-        items: [...items, ...response.data.hits],
+        items: [...items, ...response],
+        notFound: response.length === 0,
       }));
+      if (response.length < page) {
+        this.setState({ hasMore: false });
+      }
     } catch (error) {
     } finally {
       this.setState({ loading: false });
@@ -34,40 +39,40 @@ export class App extends Component {
   }
   updateSearch = ({ search }) => {
     if (this.state.search === search) {
-      return
+      return;
     }
-    this.setState({ search, items: [], page: 1 }, () => {
-      this.fetchPosts();
-    });
+    this.setState({ search, items: [], page: 1 });
   };
-  loadMore = () => {
-  this.setState(
-    ({ page }) => ({
-      page: page + 1,
-    }),
-    () => {
+  componentDidUpdate(_, prevState) {
+    const { search, page } = this.state;
+    if (search !== prevState.search || page !== prevState.page) {
       this.fetchPosts();
     }
-  );
-  };
-  openModal = (largeImageURL) => {
-    this.setState(prevState => ({
-    photoModal: largeImageURL,
-    modal: !prevState.modal,
-  }));
   }
+  loadMore = () => {
+    this.setState(({ page }) => ({
+      page: page + 1,
+    }));
+  };
+  openModal = largeImageURL => {
+    this.setState(prevState => ({
+      photoModal: largeImageURL,
+      modal: !prevState.modal,
+    }));
+  };
   render() {
-    const { items,loading, modal,photoModal } = this.state;
+    const { items, loading, modal, photoModal, notFound, hasMore } = this.state;
     return (
       <>
         <header className="searchbar">
           <SearchBar updateSearch={this.updateSearch} />
         </header>
         {loading && <Loader />}
-        <ImageGallery>
-          {items.length > 0 && <ImageGalleryItem item={this.state.items}  openModal={this.openModal}/>}
-        </ImageGallery>
-        {items.length > 0 && <Button loadMore={this.loadMore} />}
+        {notFound && <h2>No results found</h2>}
+        {items.length > 0 && (
+          <ImageGallery item={this.state.items} openModal={this.openModal} />
+        )}
+        {hasMore && items.length > 0 && <Button loadMore={this.loadMore} />}
         {modal && <Modal openModal={this.openModal} photoModal={photoModal} />}
       </>
     );
